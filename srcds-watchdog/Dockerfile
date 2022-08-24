@@ -6,7 +6,7 @@ RUN dpkg --add-architecture i386 \
         ca-certificates \
 				curl
 
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs --no-install-recommends --no-install-suggests
 
 
@@ -14,18 +14,18 @@ RUN apt-get install -y nodejs --no-install-recommends --no-install-suggests
 FROM NODE AS NODE_MODULES
 
 WORKDIR /INSTALL
-COPY ./watchdog/*.* ./
+COPY ./*.* ./
 RUN npm install --only=production
 
 
 
 FROM NODE
 
-ENV SM_VERSION=1.10
+ENV SM_VERSION=1.11
 ENV MM_VERSION=1.11
 
 ENV APPS="csgo:740:730"
-ENV KEEPCOUNT=3
+ENV KEEPCOUNT=4
 
 RUN apt-get install -y --no-install-recommends --no-install-suggests \
 			lib32gcc1 \
@@ -43,7 +43,7 @@ VOLUME ["/repo"]
 # Install / Config watchdog
 WORKDIR /watchdog
 
-COPY ./watchdog/*.js ./
+COPY ./*.js ./
 COPY --from=NODE_MODULES /INSTALL/node_modules/ ./node_modules/
 
 # Cleanup
