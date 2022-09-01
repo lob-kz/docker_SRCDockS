@@ -61,14 +61,6 @@ loadCleanAddons() {
 
 	cp -rsf /repo/mm/* /srcds/srv/$APP_NAME/
 	cp -rsf /repo/sm/* /srcds/srv/$APP_NAME/
-
-	if [[ $STOCK_SM_PLUGINS ]]
-	then
-		local keepList="\($(echo "$STOCK_SM_PLUGINS" | sed "s/,/\\\\|/g")\).smx"
-		# Hack with -mount so that we dont delete stuff in a possibly mounted plugins folder
-		# incase the user goofs. We only find / delete links anyways and not files but eh
-		find /srcds/srv/$APP_NAME/addons/sourcemod -mount -type l -path "*/plugins/*.smx" -not -regex ".*/$keepList$" -delete
-	fi
 }
 
 addCustomFiles() {
@@ -79,9 +71,20 @@ addCustomFiles() {
 	cp -rsf /custom/* /srcds/srv/$APP_NAME/ 2> /dev/null || true
 }
 
+removePlugins() {
+	if [[ $REMOVE_PLUGINS ]]
+	then
+		local removeList="\($(echo "$REMOVE_PLUGINS" | sed "s/,/\\\\|/g")\).smx"
+		# Hack with -mount so that we dont delete stuff in a possibly mounted plugins folder
+		# incase the user goofs. We only find / delete links anyways and not files but eh
+		find /srcds/srv/$APP_NAME/addons/sourcemod -mount -type l -path "*/plugins/*.smx" -regex ".*/$removeList$" -delete
+	fi
+}
+
 cd /srcds/srv
 
 loadLatestVersion
 loadCleanAddons
 addOverlays
 addCustomFiles
+removePlugins
