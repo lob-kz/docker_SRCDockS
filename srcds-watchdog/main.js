@@ -328,7 +328,7 @@ async function checkAddonUpdates(initial) {
 		dl("sm", baseUrlSM, latestSM).then(() => {
 			addons.latestSM = latestSM;
 			// Scripting folder isnt needed on the server
-			//execSync("rm -rf /repo/sm/addons/sourcemod/scripting || true");
+			execSync("rm -rf /repo/sm/addons/sourcemod/scripting || true");
 
 			console.log("Updated Sourcemod to `%s`", latestSM);
 			fs.writeFileSync("/repo/sm/version", latestSM);
